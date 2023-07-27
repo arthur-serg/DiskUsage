@@ -1,0 +1,13 @@
+.vs
+.idea
+out
+/x64/
+[a-zA-Z.]*.user
+#/*
+#!readme.md
+#!.gitignore
+#!src
+#!include
+#!3rdparty
+#!CmakeLists.txt
+#!*.cpp
