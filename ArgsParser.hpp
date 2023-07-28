@@ -8,9 +8,8 @@
 class ArgsParser
 {
 public:
-    ArgsParser() = delete;
-
-    explicit ArgsParser(int argc, char* argv[]);
+    explicit ArgsParser(int argc, char* argv[]) noexcept;
+    ~ArgsParser() noexcept = default;
 
 private:
     const std::string args;
