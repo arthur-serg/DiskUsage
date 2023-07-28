@@ -1,5 +1,20 @@
 #pragma once
+#include "ArgsParser.hpp"
+
 class DirectoryManager
 {
-};
+public:
+    DirectoryManager(const ArgsParser& argsParser) : argsParser(argsParser)
+    {
+    }
 
+    void printInfo();
+
+private:
+    ArgsParser argsParser;
+    int blockSizeInBytes = 512;
+
+    size_t getFileBlocks(const std::filesystem::path& path) const;
+    size_t getFileSize(const std::filesystem::path& path) const;
+    size_t lookupDir(const std::filesystem::path& path, int depth) const;
+};
