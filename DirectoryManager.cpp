@@ -1,7 +1,14 @@
 #include "DirectoryManager.hpp"
 
-size_t DirectoryManager::getFileBlocks(const std::filesystem::path& path) const
+void DirectoryManager::printInfo()
 {
+    size_t totalSize = lookupDir(argsParser.getPath(), 0);
+
+    if (argsParser.needPrintTotal())
+    {
+        std::cout << totalSize << "\t" << argsParser.getPath().string() << std::endl;
+    }
+}
 
 size_t DirectoryManager::getFileBlocks(const std::filesystem::path& path) const
 {
