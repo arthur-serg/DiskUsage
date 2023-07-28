@@ -8,6 +8,7 @@ public:
     {
     }
 
+    ~DirectoryManager() = default;
     void printInfo();
 
 private:
