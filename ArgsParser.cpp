@@ -1,7 +1,7 @@
 #include "ArgsParser.hpp"
 
 
-ArgsParser::ArgsParser(int argc, char* argv[])
+ArgsParser::ArgsParser(int argc, char* argv[]) noexcept
 {
     auto args = argvToString(argc, argv);
     process(args);

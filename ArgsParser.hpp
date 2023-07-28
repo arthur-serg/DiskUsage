@@ -11,6 +11,11 @@ public:
     explicit ArgsParser(int argc, char* argv[]) noexcept;
     ~ArgsParser() noexcept = default;
 
+    bool needPrintInBytes() const { return printBytes; }
+    bool needPrintEachFileInfo() const { return printEachFileInfo; }
+    bool needPrintTotal() const { return printTotal; }
+    std::filesystem::path getPath() { return dirPath; }
+
 private:
     const std::string args;
     std::filesystem::path dirPath;
