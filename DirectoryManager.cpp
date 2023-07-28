@@ -7,6 +7,22 @@ size_t DirectoryManager::getFileBlocks(const std::filesystem::path& path) const
 
 size_t DirectoryManager::getFileSize(const std::filesystem::path& path) const
 {
+    if (std::filesystem::is_regular_file(path))
+    {
+        return std::filesystem::file_size(path);
+    }
+    else if (std::filesystem::is_directory(path))
+    {
+        size_t size = 0;
+        for (const auto& item : std::filesystem::directory_iterator(path))
+        {
+            size += getFileSize(item.path());
+        }
+
+        return size;
+    }
+
+    return 0;
 }
 
 size_t DirectoryManager::lookupDir(const std::filesystem::path& path, int depth) const
