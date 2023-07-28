@@ -3,6 +3,10 @@
 size_t DirectoryManager::getFileBlocks(const std::filesystem::path& path) const
 {
 
+size_t DirectoryManager::getFileBlocks(const std::filesystem::path& path) const
+{
+    size_t sizeOfFile = getFileSize(path);
+    return static_cast<size_t>(std::ceil(static_cast<double>(sizeOfFile) / blockSizeInBytes));
 }
 
 size_t DirectoryManager::getFileSize(const std::filesystem::path& path) const
