@@ -22,7 +22,7 @@ size_t DirectoryManager::getFileSize(const std::filesystem::path& path) const
     {
         return std::filesystem::file_size(path);
     }
-    else if (std::filesystem::is_directory(path))
+    if (std::filesystem::is_directory(path))
     {
         size_t size = 0;
         for (const auto& item : std::filesystem::directory_iterator(path))
@@ -32,6 +32,7 @@ size_t DirectoryManager::getFileSize(const std::filesystem::path& path) const
 
         return size;
     }
+
 
     return 0;
 }
@@ -55,9 +56,11 @@ size_t DirectoryManager::lookupDir(const std::filesystem::path& path, int depth)
         }
     }
 
-    if (argsParser.needPrintEachFileInfo())
+    if (argsParser.needPrintEachFileInfo() && !std::filesystem::is_directory(path))
     {
-        std::cout << totalSize << " " << path.string() << std::endl;
+        size_t size = getFileSize(path) / blockSizeInBytes;
+        std::cout << size << "\t" << path.string() << std::endl;
+        return size;
     }
 
     return totalSize;
