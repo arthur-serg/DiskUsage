@@ -136,10 +136,12 @@
     <ClCompile Include="ArgsParser.cpp" />
     <ClCompile Include="DirectoryManager.cpp" />
     <ClCompile Include="DiskUsage.cpp" />
+    <ClCompile Include="ThreadPool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArgsParser.hpp" />
     <ClInclude Include="DirectoryManager.hpp" />
+    <ClInclude Include="ThreadPool.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

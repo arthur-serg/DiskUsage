@@ -40,6 +40,7 @@ size_t DirectoryManager::getFileSize(const std::filesystem::path& path) const
 size_t DirectoryManager::lookupDir(const std::filesystem::path& path, int depth) const
 {
     size_t totalSize = 0;
+
     if (std::filesystem::exists(path))
     {
         if (depth >= 0)
@@ -48,19 +49,27 @@ size_t DirectoryManager::lookupDir(const std::filesystem::path& path, int depth)
 
             if (std::filesystem::is_directory(path))
             {
+                ThreadPool threadPool(std::thread::hardware_concurrency());
+
                 for (const auto& item : std::filesystem::directory_iterator(path))
                 {
-                    totalSize += lookupDir(item.path(), depth - 1);
+                    if (std::filesystem::is_directory(item.path()))
+                    {
+                        threadPool.enqueue([&]()
+                            {
+                                totalSize += lookupDir(item.path(), depth - 1);
+                            });
+                    }
+
+                    if (argsParser.needPrintEachFileInfo() && !std::filesystem::is_directory(item.path()))
+                    {
+                        size_t size = getFileSize(item.path()) / blockSizeInBytes;
+                        std::cout << size << "\t" << item.path().string() << std::endl;
+                        totalSize += size;
+                    }
                 }
             }
         }
-    }
-
-    if (argsParser.needPrintEachFileInfo() && !std::filesystem::is_directory(path))
-    {
-        size_t size = getFileSize(path) / blockSizeInBytes;
-        std::cout << size << "\t" << path.string() << std::endl;
-        return size;
     }
 
     return totalSize;
