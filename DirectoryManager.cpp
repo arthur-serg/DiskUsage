@@ -20,14 +20,25 @@ size_t DirectoryManager::getFileSize(const std::filesystem::path& path) const
 {
     if (std::filesystem::is_regular_file(path))
     {
-        return std::filesystem::file_size(path);
+        size_t size = std::filesystem::file_size(path);
+        std::cout << "File: " << path.string() << ", Size: " << size << " bytes" << std::endl;
+        return size;
     }
     if (std::filesystem::is_directory(path))
     {
         size_t size = 0;
         for (const auto& item : std::filesystem::directory_iterator(path))
         {
-            size += getFileSize(item.path());
+            if (std::filesystem::is_regular_file(item.path()))
+            {
+                size_t fileSize = std::filesystem::file_size(item.path());
+                std::cout << "File: " << item.path().string() << ", Size: " << fileSize << " bytes" << std::endl;
+                size += fileSize;
+            }
+            else if (std::filesystem::is_directory(item.path()))
+            {
+                size += getFileSize(item.path());
+            }
         }
 
         return size;
@@ -50,23 +61,38 @@ size_t DirectoryManager::lookupDir(const std::filesystem::path& path, int depth)
             if (std::filesystem::is_directory(path))
             {
                 ThreadPool threadPool(std::thread::hardware_concurrency());
-
+                std::vector<std::pair<size_t, std::string>> fileSizes;
                 for (const auto& item : std::filesystem::directory_iterator(path))
                 {
                     if (std::filesystem::is_directory(item.path()))
                     {
                         threadPool.enqueue([&]()
-                            {
-                                totalSize += lookupDir(item.path(), depth - 1);
-                            });
+                        {
+                            totalSize += lookupDir(item.path(), depth - 1);
+                        });
                     }
 
                     if (argsParser.needPrintEachFileInfo() && !std::filesystem::is_directory(item.path()))
                     {
-                        size_t size = getFileSize(item.path()) / blockSizeInBytes;
-                        std::cout << size << "\t" << item.path().string() << std::endl;
-                        totalSize += size;
+                        if (argsParser.needPrintInBytes())
+                        {
+                            size_t size = getFileSize(item.path());
+                            std::cout << size << "\t" << item.path().string() << std::endl;
+                            fileSizes.emplace_back(size, item.path().string());
+                            totalSize += size;
+                        }
+                        else
+                        {
+                            size_t size = getFileSize(item.path()) / blockSizeInBytes;
+                            std::cout << size << "\t" << item.path().string() << std::endl;
+                            fileSizes.emplace_back(size, item.path().string());
+                            totalSize += size;
+                        }
                     }
+                }
+                for (const auto& fileInfo : fileSizes)
+                {
+                    std::cout << fileInfo.first << "\t" << fileInfo.second << std::endl;
                 }
             }
         }
