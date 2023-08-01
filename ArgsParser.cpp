@@ -7,6 +7,12 @@ ArgsParser::ArgsParser(int argc, char* argv[]) noexcept
     process(args);
 }
 
+ArgsParser::ArgsParser(const std::string& argv) noexcept
+{
+    process(argv);
+}
+
+
 void ArgsParser::process(const std::string& args)
 {
     std::vector<std::string> params;
@@ -59,18 +65,6 @@ void ArgsParser::process(const std::string& args)
             }
         }
     }
-#ifdef DEBUG
-    std::cout << "params \n";
-    for (const auto& elem : params)
-    {
-        std::cout << elem << " " << std::endl;
-    }
-
-    for (const auto& item : dirPath)
-    {
-        std::cout << item.stem() << " " << std::endl;
-    }
-#endif
 }
 
 bool ArgsParser::isParam(const std::string& arg)

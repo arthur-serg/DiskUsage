@@ -9,6 +9,7 @@ class ArgsParser
 {
 public:
     explicit ArgsParser(int argc, char* argv[]) noexcept;
+    explicit ArgsParser(const std::string& argv) noexcept;
     ~ArgsParser() noexcept = default;
 
     bool needPrintInBytes() const { return printBytes; }
