@@ -1,4 +1,5 @@
 #include "DirectoryManager.hpp"
+#include "ThreadPool.hpp"
 
 void DirectoryManager::printInfo()
 {
